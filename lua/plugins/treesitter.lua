@@ -56,7 +56,11 @@ vim.api.nvim_create_autocmd('FileType', {
       return
     end
     pcall(vim.treesitter.start, ev.buf, lang)
-    if not no_indent[ft] then
+    if no_indent[ft] then
+      -- The stock indent scripts read legacy syntax groups (php's falls back to
+      -- column 0 without them), so keep regex syntax running under treesitter.
+      vim.bo[ev.buf].syntax = 'ON'
+    else
       vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
     end
   end,
