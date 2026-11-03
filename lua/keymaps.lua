@@ -15,6 +15,12 @@ end, { desc = 'Buffer diagnostics to loclist' })
 
 map('n', '<leader>u', '<cmd>Undotree<CR>', { desc = 'Undo tree' })
 
+-- change/substitute don't overwrite the clipboard (black hole register).
+for _, key in ipairs { 'c', 'C', 's', 'S' } do
+  map('x', key, '"_' .. key)
+  map('n', key, '"_' .. key)
+end
+
 map('i', '<Tab>', function()
   return vim.fn.pumvisible() == 1 and '<C-n>' or '<Tab>'
 end, { expr = true })
