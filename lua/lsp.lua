@@ -95,7 +95,18 @@ vim.api.nvim_create_autocmd('LspAttach', {
     map('<leader>ca', vim.lsp.buf.code_action, 'Code action', { 'n', 'x' })
 
     if client:supports_method 'textDocument/completion' then
-      vim.lsp.completion.enable(true, client.id, ev.buf)
+      -- Servers only advertise a few trigger characters (gopls: just '.'), so also
+      -- trigger on identifier characters to get as-you-type completion like nvim-cmp.
+      -- Only fires when the menu is closed; native fuzzy filtering handles the rest.
+      local provider = client.server_capabilities.completionProvider
+      local triggers = provider.triggerCharacters or {}
+      if not vim.list_contains(triggers, 'a') then
+        for c in ('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'):gmatch '.' do
+          table.insert(triggers, c)
+        end
+        provider.triggerCharacters = triggers
+      end
+      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
     end
   end,
 })

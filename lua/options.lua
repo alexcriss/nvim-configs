@@ -21,9 +21,28 @@ o.winborder = 'rounded'
 o.pumborder = 'rounded'
 o.pummaxwidth = 80
 
+o.pumheight = 12
+
+-- No buffer-word autocompletion; LSP autotriggers its own menu (see lsp.lua).
 o.autocomplete = false
 o.complete = 'o,.^5,w^5,b^5'
-o.completeopt = 'menu,menuone,noselect,fuzzy,popup'
+o.completeopt = 'menu,menuone,noinsert,fuzzy,popup'
+
+vim.api.nvim_create_autocmd('ColorScheme', {
+  group = vim.api.nvim_create_augroup('pmenu-hl', { clear = true }),
+  callback = function()
+    local hl = vim.api.nvim_set_hl
+    hl(0, 'Pmenu', { link = 'NormalFloat' })
+    hl(0, 'PmenuBorder', { link = 'FloatBorder' })
+    hl(0, 'PmenuSel', { link = 'Visual' })
+    hl(0, 'PmenuKind', { link = 'Type' })
+    hl(0, 'PmenuKindSel', { link = 'Visual' })
+    hl(0, 'PmenuExtra', { link = 'Comment' })
+    hl(0, 'PmenuExtraSel', { link = 'Visual' })
+    hl(0, 'PmenuMatch', { link = 'Special' })
+    hl(0, 'PmenuMatchSel', { link = 'Special' })
+  end,
+})
 
 -- Buffers loaded while events were suppressed (session restore, picker previews)
 -- never get a filetype, so LSP and treesitter never start for them.

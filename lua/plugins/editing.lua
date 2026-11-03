@@ -1,5 +1,6 @@
 require('mini.icons').setup()
 MiniIcons.mock_nvim_web_devicons()
+MiniIcons.tweak_lsp_kind 'prepend'
 require('mini.ai').setup { n_lines = 500 }
 require('mini.pairs').setup()
 local function statusline_sections()
